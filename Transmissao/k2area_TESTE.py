@@ -1,13 +1,13 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Created on Wed Feb 12 11:52:30 2020
+Created on Jul 24 2020
 
-@author: PPeters
+@author: Jppbrbs
 """
 
 """
-FULL P2P - IEEE 14 BUS
+Kundur Two-Area System - pandapower
 """
 
 
@@ -15,126 +15,12 @@ FULL P2P - IEEE 14 BUS
 
 import numpy as np
 import pandas as pd
-# import gurobipy as gb
 import pandapower as pp
 from pandapower.plotting.plotly import pf_res_plotly
 import pandapower.networks
 
 
-### ...::: IMPORTING DATA FROM netWORK AND AGENT :::... ###
 
-# networkData = pd.read_csv("~/Documents/UFJF/BIC_2019_20/disciplina_mercados/python/networkData.csv")
-# #print ('\n\n network Data:\n', networkData)
-
-# AgentData = pd.read_csv("~/Documents/UFJF/BIC_2019_20/disciplina_mercados/python/AgentData_14_mod.csv")
-# #print ('\n\n Agent Data:\n', AgentData)
-
-# ### ...::: PROBLEM DATA :::... ###
-
-# peer_agent = AgentData['Agent']
-# peer_bus   = AgentData['Bus']
-# peer_type  = AgentData['Type']
-# grid_line  = networkData['Line']
-
-# peer_com = AgentData['Community']
-# peer_com = pd.to_numeric(peer_com, errors='coerce')       # used to transform data into numeric type
-
-# p_min = AgentData['Pmin']
-# p_min = pd.to_numeric(p_min, errors='coerce')       # used to transform data into numeric type
-
-# p_max = AgentData['Pmax']
-# p_max = pd.to_numeric(p_max, errors='coerce')       # used to transform data into numeric type
-
-# a_doll_MW2 = AgentData['a ($/MW^2)']
-# a_doll_MW2 = pd.to_numeric(a_doll_MW2, errors='coerce')  # used to transform data into numeric type
-
-# b_doll_MW  = AgentData['b ($/MW)']
-# b_doll_MW  = pd.to_numeric(b_doll_MW, errors='coerce')   # used to transform data into numeric type
-
-# nbus   = max(peer_bus)        # defines AMOUNT OF BUSES
-# ncom   = max(peer_com)        # defines AMOUNT OF COMMUNITIES
-# nagent = max(peer_agent)      # defines AMOUNT OF AGENTS = PEERS
-# nline  = max(grid_line)       # defines the AMOUNT OF LINES IN THE SYSTEM
-
-# ### ...::: INCIDENCE MATRIX (A) :::... ###
-
-# Inc = np.zeros((nagent,nagent))
-
-# for i in range(0,nagent):
-#     for j in range(0,nagent):
-#         if (peer_type[i]=='Producer' and peer_type[j]=='Consumer'):
-#             Inc[i,j] = Inc[i,j] + 1
-#             Inc[j,i] = Inc[i,j]
-#         if (peer_type[i]=='Producer' and peer_type[j]=='Grid_Export'):
-#             Inc[i,j] = Inc[i,j] + 1
-#             Inc[j,i] = Inc[i,j]
-#         if (peer_type[i]=='Consumer' and peer_type[j]=='Grid_Import'):
-#             Inc[i,j] = Inc[i,j] + 1
-#             Inc[j,i] = Inc[i,j]
-            
-### ...::: GUROBI OPTIMIZATION - FULL P2P :::... ###
-
-# model = gb.Model('mip1') # initiates the optimization model
-# model.params.OutputFlag=False # Supress diagnostic ouput
-# P_trade = model.addVars(nagent,nagent) # defining variables
-
-# model.update() # Let Gurobi know that we've added variables to the model
-
-# P_peer = [0]*nagent
-# for i in range(0,nagent):
-#     for j in range(0,nagent):
-#         P_peer[i] = P_peer[i] + P_trade[j,i] * Inc[j,i]
-        
-# # Social Welfare
-# SW = 0
-# for i in range(0,nagent):
-#     SW = SW + b_doll_MW[i] * P_peer[i]
-# #    SW = SW + 0.5 * a_doll_MW2[i] * P_peer[i] * P_peer[i] + b_doll_MW[i] * P_peer[i]
-
-# fob = gb.QuadExpr()
-# fob = model.setObjective(SW, gb.GRB.MAXIMIZE) # Set the objective function, and indicate that we want to minimize
-
-# ### ADDING CONSTRAINTS
-
-# for ii in range(0,nagent):
-#     model.addConstr(P_peer[ii], gb.GRB.LESS_EQUAL, p_max[ii])
-#     model.addConstr(P_peer[ii], gb.GRB.GREATER_EQUAL, p_min[ii])
-
-# for ii in range(0,nagent):
-#     for jj in range(0,nagent):
-#         model.addConstr(P_trade[ii,jj], gb.GRB.EQUAL, P_trade[jj,ii])        
-              
-# model.update() # Let Gurobi know that we've added constraints to the model
-# model.write("full_p2p_ieee14_w_grid.lp") # creates the optimization model file
-# model.optimize() # runs optimization
-
-# ### ...::: RESULTS :::...
-
-# i = 0
-# Var_value = np.zeros([441])
-
-# if model.status == gb.GRB.Status.OPTIMAL:    
-#     print ('\n\n FOUND OBJECTIVE VALUE: {}'.format(model.ObjVal))
-#     for res in model.getVars():
-#         Var_name = res.varName
-#         Var_value[i] = res.x
-#         i = i+1
-#         print('%s %g' % (res.varName, res.x))
-
-# MATRIZ = Var_value.reshape(21,21)
-
-# P = np.zeros(21)
-# Consumer = 0
-# Producer = 0
-
-# for i in range(0,20):
-#     P[i] = sum(MATRIZ[i,:])
-#     if i<11:
-#         Consumer = P[i] + Consumer
-#     if i>=11 and i<19:
-#         Producer += P[i]
-    
-# print(P)
 
 ### ...::: PANDA POWER :::...
 k2area = pp.create_empty_network(name='IEEE-34Node',f_hz=60)
