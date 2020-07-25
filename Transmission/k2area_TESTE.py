@@ -59,24 +59,24 @@ pp.create_ext_grid(k2area, name='Slack', bus=4, vm_pu=1.01, va_degree=-17.0, in_
 
 
 # CRIANDO GERADORES
-# pp.create_gen(k2area, bus=1, p_mw=700, vm_pu=1.03, sn_mva=900, name='G1', index=None, max_q_mvar=99999, min_q_mvar=-99999, min_p_mw=0., controllable=False, in_service=True)
-# pp.create_gen(k2area, bus=2, p_mw=700, vm_pu=1.01, sn_mva=900, name='G2', index=None, max_q_mvar=99999, min_q_mvar=-99999, min_p_mw=0., controllable=False, in_service=True)
-# pp.create_gen(k2area, bus=3, p_mw=719, vm_pu=1.03, sn_mva=900, name='G3', index=None, max_q_mvar=99999, min_q_mvar=-99999, min_p_mw=0., controllable=False, in_service=True)
-# pp.create_gen(k2area, bus=4, p_mw=700, vm_pu=1.01, sn_mva=900, name='G4', index=None, max_q_mvar=99999, min_q_mvar=-99999, min_p_mw=0., controllable=False, in_service=True)
+pp.create_gen(k2area, bus=1, p_mw=700, vm_pu=1.03, sn_mva=900, name='G1', index=None, max_q_mvar=99999, min_q_mvar=-99999, min_p_mw=0., controllable=False, in_service=True)
+pp.create_gen(k2area, bus=2, p_mw=700, vm_pu=1.01, sn_mva=900, name='G2', index=None, max_q_mvar=99999, min_q_mvar=-99999, min_p_mw=0., controllable=False, in_service=True)
+pp.create_gen(k2area, bus=3, p_mw=719, vm_pu=1.03, sn_mva=900, name='G3', index=None, max_q_mvar=99999, min_q_mvar=-99999, min_p_mw=0., controllable=False, in_service=True)
+pp.create_gen(k2area, bus=4, p_mw=700, vm_pu=1.01, sn_mva=900, name='G4', index=None, max_q_mvar=99999, min_q_mvar=-99999, min_p_mw=0., controllable=False, in_service=True)
 
 
 # CRIANDO TRANSFORMADORES
-# pp.create_transformer_from_parameters(k2area, hv_bus=5, lv_bus=1, name='T1_5', sn_mva=900, vn_hv_kv=230, vn_lv_kv=20*1.03, vk_percent=30.375, vkr_percent=0, pfe_kw=0, i0_percent=0)
-# pp.create_transformer_from_parameters(k2area, hv_bus=6, lv_bus=2, name='T2_6', sn_mva=900, vn_hv_kv=230, vn_lv_kv=20*1.01, vk_percent=30.375, vkr_percent=0, pfe_kw=0, i0_percent=0)
-# pp.create_transformer_from_parameters(k2area, hv_bus=11, lv_bus=3, name='T3_11', sn_mva=900, vn_hv_kv=230, vn_lv_kv=20*1.03, vk_percent=30.375, vkr_percent=0, pfe_kw=0, i0_percent=0)
-# pp.create_transformer_from_parameters(k2area, hv_bus=10, lv_bus=4, name='T4_10', sn_mva=900, vn_hv_kv=230, vn_lv_kv=20*1.01, vk_percent=30.375, vkr_percent=0, pfe_kw=0, i0_percent=0)
+pp.create_transformer_from_parameters(k2area, hv_bus=5, lv_bus=1, name='T1_5', sn_mva=900, vn_hv_kv=230, vn_lv_kv=20*1.03, vk_percent=0.135, vkr_percent=0, pfe_kw=0, i0_percent=0)
+pp.create_transformer_from_parameters(k2area, hv_bus=6, lv_bus=2, name='T2_6', sn_mva=900, vn_hv_kv=230, vn_lv_kv=20*1.01, vk_percent=0.135, vkr_percent=0, pfe_kw=0, i0_percent=0)
+pp.create_transformer_from_parameters(k2area, hv_bus=11, lv_bus=3, name='T3_11', sn_mva=900, vn_hv_kv=230, vn_lv_kv=20*1.03, vk_percent=0.135, vkr_percent=0, pfe_kw=0, i0_percent=0)
+pp.create_transformer_from_parameters(k2area, hv_bus=10, lv_bus=4, name='T4_10', sn_mva=900, vn_hv_kv=230, vn_lv_kv=20*1.01, vk_percent=0.135, vkr_percent=0, pfe_kw=0, i0_percent=0)
 
 
 # CRIANDO CARGAS
-# pp.create_load(k2area, bus=1, name='L7', p_mw=967, q_mvar=100, index=7, in_service=True)
-# pp.create_load(k2area, bus=2, name='L9', p_mw=1767, q_mvar=100, index=9, in_service=True)
-# pp.create_load(k2area, bus=3, name='C7', p_mw=0, q_mvar=200, index=3, in_service=True)
-# pp.create_load(k2area, bus=4, name='C9', p_mw=0, q_mvar=350, index=4, in_service=True)
+pp.create_load(k2area, bus=1, name='L7', p_mw=967, q_mvar=100, index=7, in_service=True)
+pp.create_load(k2area, bus=2, name='L9', p_mw=1767, q_mvar=100, index=9, in_service=True)
+pp.create_load(k2area, bus=3, name='C7', p_mw=0, q_mvar=200, index=3, in_service=True)
+pp.create_load(k2area, bus=4, name='C9', p_mw=0, q_mvar=350, index=4, in_service=True)
 
 
 pp.runpp(k2area)
