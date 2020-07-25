@@ -1,11 +1,15 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-"""
-Created on Jul 24 2020
+#########################################
+# Created by: Joao Pedro Peters Barbosa #
+#                                       #
+# github: https://github.com/Jppbrbs    #
+# email: jppbrbs@gmail.com              #
+#                                       #
+# Date: Jul/2020                        #
+#########################################
 
-@author: Jppbrbs
-"""
 
 """
 Kundur Two-Area System - pandapower

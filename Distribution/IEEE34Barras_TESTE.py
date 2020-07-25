@@ -1,11 +1,15 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-"""
-Created on Jul 25 2020
+#########################################
+# Created by: Joao Pedro Peters Barbosa #
+#                                       #
+# github: https://github.com/Jppbrbs    #
+# email: jpptrs@gmail.com               #
+#                                       #
+# Date: Jul/2020                        #
+#########################################
 
-@author: Jppbrbs
-"""
 
 """
 IEEE 34 Node System - pandapower
@@ -19,7 +23,6 @@ import pandas as pd
 import pandapower as pp
 from pandapower.plotting.plotly import pf_res_plotly
 import pandapower.networks
-
 
 
 
