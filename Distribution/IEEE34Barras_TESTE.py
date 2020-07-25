@@ -1,13 +1,14 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""
-Created on Wed Feb 12 11:52:30 2020
-
-@author: PPeters
-"""
 
 """
-FULL P2P - IEEE 14 BUS
+Created on Jul 25 2020
+
+@author: Jppbrbs
+"""
+
+"""
+IEEE 34 Node System - pandapower
 """
 
 
@@ -15,126 +16,12 @@ FULL P2P - IEEE 14 BUS
 
 import numpy as np
 import pandas as pd
-# import gurobipy as gb
 import pandapower as pp
 from pandapower.plotting.plotly import pf_res_plotly
 import pandapower.networks
 
 
-### ...::: IMPORTING DATA FROM i34bWORK AND AGENT :::... ###
 
-# i34bworkData = pd.read_csv("~/Documents/UFJF/BIC_2019_20/disciplina_mercados/python/i34bworkData.csv")
-# #print ('\n\n i34bwork Data:\n', i34bworkData)
-
-# AgentData = pd.read_csv("~/Documents/UFJF/BIC_2019_20/disciplina_mercados/python/AgentData_14_mod.csv")
-# #print ('\n\n Agent Data:\n', AgentData)
-
-# ### ...::: PROBLEM DATA :::... ###
-
-# peer_agent = AgentData['Agent']
-# peer_bus   = AgentData['Bus']
-# peer_type  = AgentData['Type']
-# grid_line  = i34bworkData['Line']
-
-# peer_com = AgentData['Community']
-# peer_com = pd.to_numeric(peer_com, errors='coerce')       # used to transform data into numeric type
-
-# p_min = AgentData['Pmin']
-# p_min = pd.to_numeric(p_min, errors='coerce')       # used to transform data into numeric type
-
-# p_max = AgentData['Pmax']
-# p_max = pd.to_numeric(p_max, errors='coerce')       # used to transform data into numeric type
-
-# a_doll_MW2 = AgentData['a ($/MW^2)']
-# a_doll_MW2 = pd.to_numeric(a_doll_MW2, errors='coerce')  # used to transform data into numeric type
-
-# b_doll_MW  = AgentData['b ($/MW)']
-# b_doll_MW  = pd.to_numeric(b_doll_MW, errors='coerce')   # used to transform data into numeric type
-
-# nbus   = max(peer_bus)        # defines AMOUNT OF BUSES
-# ncom   = max(peer_com)        # defines AMOUNT OF COMMUNITIES
-# nagent = max(peer_agent)      # defines AMOUNT OF AGENTS = PEERS
-# nline  = max(grid_line)       # defines the AMOUNT OF LINES IN THE SYSTEM
-
-# ### ...::: INCIDENCE MATRIX (A) :::... ###
-
-# Inc = np.zeros((nagent,nagent))
-
-# for i in range(0,nagent):
-#     for j in range(0,nagent):
-#         if (peer_type[i]=='Producer' and peer_type[j]=='Consumer'):
-#             Inc[i,j] = Inc[i,j] + 1
-#             Inc[j,i] = Inc[i,j]
-#         if (peer_type[i]=='Producer' and peer_type[j]=='Grid_Export'):
-#             Inc[i,j] = Inc[i,j] + 1
-#             Inc[j,i] = Inc[i,j]
-#         if (peer_type[i]=='Consumer' and peer_type[j]=='Grid_Import'):
-#             Inc[i,j] = Inc[i,j] + 1
-#             Inc[j,i] = Inc[i,j]
-            
-### ...::: GUROBI OPTIMIZATION - FULL P2P :::... ###
-
-# model = gb.Model('mip1') # initiates the optimization model
-# model.params.OutputFlag=False # Supress diagnostic ouput
-# P_trade = model.addVars(nagent,nagent) # defining variables
-
-# model.update() # Let Gurobi know that we've added variables to the model
-
-# P_peer = [0]*nagent
-# for i in range(0,nagent):
-#     for j in range(0,nagent):
-#         P_peer[i] = P_peer[i] + P_trade[j,i] * Inc[j,i]
-        
-# # Social Welfare
-# SW = 0
-# for i in range(0,nagent):
-#     SW = SW + b_doll_MW[i] * P_peer[i]
-# #    SW = SW + 0.5 * a_doll_MW2[i] * P_peer[i] * P_peer[i] + b_doll_MW[i] * P_peer[i]
-
-# fob = gb.QuadExpr()
-# fob = model.setObjective(SW, gb.GRB.MAXIMIZE) # Set the objective function, and indicate that we want to minimize
-
-# ### ADDING CONSTRAINTS
-
-# for ii in range(0,nagent):
-#     model.addConstr(P_peer[ii], gb.GRB.LESS_EQUAL, p_max[ii])
-#     model.addConstr(P_peer[ii], gb.GRB.GREATER_EQUAL, p_min[ii])
-
-# for ii in range(0,nagent):
-#     for jj in range(0,nagent):
-#         model.addConstr(P_trade[ii,jj], gb.GRB.EQUAL, P_trade[jj,ii])        
-              
-# model.update() # Let Gurobi know that we've added constraints to the model
-# model.write("full_p2p_ieee14_w_grid.lp") # creates the optimization model file
-# model.optimize() # runs optimization
-
-# ### ...::: RESULTS :::...
-
-# i = 0
-# Var_value = np.zeros([441])
-
-# if model.status == gb.GRB.Status.OPTIMAL:    
-#     print ('\n\n FOUND OBJECTIVE VALUE: {}'.format(model.ObjVal))
-#     for res in model.getVars():
-#         Var_name = res.varName
-#         Var_value[i] = res.x
-#         i = i+1
-#         print('%s %g' % (res.varName, res.x))
-
-# MATRIZ = Var_value.reshape(21,21)
-
-# P = np.zeros(21)
-# Consumer = 0
-# Producer = 0
-
-# for i in range(0,20):
-#     P[i] = sum(MATRIZ[i,:])
-#     if i<11:
-#         Consumer = P[i] + Consumer
-#     if i>=11 and i<19:
-#         Producer += P[i]
-    
-# print(P)
 
 ### ...::: PANDA POWER :::...
 i34b = pp.create_empty_network(name='IEEE-34Node',f_hz=60)
@@ -213,26 +100,26 @@ pp.create_bus(i34b, vn_kv=24.9, name='838', index=838, geodata=(4200,-600), type
 
 
 # CRIANDO LINHAS
-pp.create_line_from_parameters(i34b, from_bus=0, to_bus=1, length_km=1, r_ohm_per_km=0.01938, x_ohm_per_km=0.05917, c_nf_per_km=388.61, max_i_ka=100, name=None, index=0, type='ol', geodata=None, in_service=True, df=1.0, parallel=1, g_us_per_km=0.0, alpha=None, temperature_degree_celsius=None)
-pp.create_line_from_parameters(i34b, from_bus=0, to_bus=4, length_km=1, r_ohm_per_km=0.05403, x_ohm_per_km=0.22304, c_nf_per_km=388.61, max_i_ka=100, name=None, index=1, type='ol', geodata=None, in_service=True, df=1.0, parallel=1, g_us_per_km=0.0, alpha=None, temperature_degree_celsius=None)
-pp.create_line_from_parameters(i34b, from_bus=1, to_bus=2, length_km=1, r_ohm_per_km=0.04699, x_ohm_per_km=0.19797, c_nf_per_km=388.61, max_i_ka=100, name=None, index=2, type='ol', geodata=None, in_service=True, df=1.0, parallel=1, g_us_per_km=0.0, alpha=None, temperature_degree_celsius=None)
-pp.create_line_from_parameters(i34b, from_bus=1, to_bus=3, length_km=1, r_ohm_per_km=0.05811, x_ohm_per_km=0.17632, c_nf_per_km=388.61, max_i_ka=100, name=None, index=3, type='ol', geodata=None, in_service=True, df=1.0, parallel=1, g_us_per_km=0.0, alpha=None, temperature_degree_celsius=None)
-pp.create_line_from_parameters(i34b, from_bus=1, to_bus=4, length_km=1, r_ohm_per_km=0.05695, x_ohm_per_km=0.17388, c_nf_per_km=388.61, max_i_ka=100, name=None, index=4, type='ol', geodata=None, in_service=True, df=1.0, parallel=1, g_us_per_km=0.0, alpha=None, temperature_degree_celsius=None)
-pp.create_line_from_parameters(i34b, from_bus=2, to_bus=3, length_km=1, r_ohm_per_km=0.06701, x_ohm_per_km=0.17103, c_nf_per_km=388.61, max_i_ka=100, name=None, index=5, type='ol', geodata=None, in_service=True, df=1.0, parallel=1, g_us_per_km=0.0, alpha=None, temperature_degree_celsius=None)
-pp.create_line_from_parameters(i34b, from_bus=3, to_bus=4, length_km=1, r_ohm_per_km=0.01335, x_ohm_per_km=0.04211, c_nf_per_km=0.0, max_i_ka=100, name=None, index=6, type='ol', geodata=None, in_service=True, df=1.0, parallel=1, g_us_per_km=0.0, alpha=None, temperature_degree_celsius=None)
-pp.create_line_from_parameters(i34b, from_bus=3, to_bus=6, length_km=1, r_ohm_per_km=0.20912, x_ohm_per_km=0.20912, c_nf_per_km=0.0, max_i_ka=100, name=None, index=7, type='ol', geodata=None, in_service=True, df=1.0, parallel=1, g_us_per_km=0.0, alpha=None, temperature_degree_celsius=None)
-pp.create_line_from_parameters(i34b, from_bus=3, to_bus=8, length_km=1, r_ohm_per_km=0.55618, x_ohm_per_km=0.55618, c_nf_per_km=0.0, max_i_ka=100, name=None, index=8, type='ol', geodata=None, in_service=True, df=1.0, parallel=1, g_us_per_km=0.0, alpha=None, temperature_degree_celsius=None)
-pp.create_line_from_parameters(i34b, from_bus=4, to_bus=5, length_km=1, r_ohm_per_km=0.25202, x_ohm_per_km=0.25202, c_nf_per_km=0.0, max_i_ka=100, name=None, index=9, type='ol', geodata=None, in_service=True, df=1.0, parallel=1, g_us_per_km=0.0, alpha=None, temperature_degree_celsius=None)
-pp.create_line_from_parameters(i34b, from_bus=5, to_bus=10, length_km=1, r_ohm_per_km=0.09498, x_ohm_per_km=0.19890, c_nf_per_km=0.0, max_i_ka=100, name=None, index=10, type='ol', geodata=None, in_service=True, df=1.0, parallel=1, g_us_per_km=0.0, alpha=None, temperature_degree_celsius=None)
-pp.create_line_from_parameters(i34b, from_bus=5, to_bus=11, length_km=1, r_ohm_per_km=0.12291, x_ohm_per_km=0.25581, c_nf_per_km=0.0, max_i_ka=100, name=None, index=11, type='ol', geodata=None, in_service=True, df=1.0, parallel=1, g_us_per_km=0.0, alpha=None, temperature_degree_celsius=None)
-pp.create_line_from_parameters(i34b, from_bus=5, to_bus=12, length_km=1, r_ohm_per_km=0.06615, x_ohm_per_km=0.13027, c_nf_per_km=0.0, max_i_ka=100, name=None, index=12, type='ol', geodata=None, in_service=True, df=1.0, parallel=1, g_us_per_km=0.0, alpha=None, temperature_degree_celsius=None)
-pp.create_line_from_parameters(i34b, from_bus=6, to_bus=7, length_km=1, r_ohm_per_km=0.17615, x_ohm_per_km=0.17615, c_nf_per_km=0.0, max_i_ka=100, name=None, index=13, type='ol', geodata=None, in_service=True, df=1.0, parallel=1, g_us_per_km=0.0, alpha=None, temperature_degree_celsius=None)
-pp.create_line_from_parameters(i34b, from_bus=6, to_bus=8, length_km=1, r_ohm_per_km=0.11001, x_ohm_per_km=0.11001, c_nf_per_km=0.0, max_i_ka=100, name=None, index=14, type='ol', geodata=None, in_service=True, df=1.0, parallel=1, g_us_per_km=0.0, alpha=None, temperature_degree_celsius=None)
-pp.create_line_from_parameters(i34b, from_bus=8, to_bus=9, length_km=1, r_ohm_per_km=0.03181, x_ohm_per_km=0.08450, c_nf_per_km=0.0, max_i_ka=100, name=None, index=15, type='ol', geodata=None, in_service=True, df=1.0, parallel=1, g_us_per_km=0.0, alpha=None, temperature_degree_celsius=None)
-pp.create_line_from_parameters(i34b, from_bus=8, to_bus=13, length_km=1, r_ohm_per_km=0.12711, x_ohm_per_km=0.27038, c_nf_per_km=0.0, max_i_ka=100, name=None, index=16, type='ol', geodata=None, in_service=True, df=1.0, parallel=1, g_us_per_km=0.0, alpha=None, temperature_degree_celsius=None)
-pp.create_line_from_parameters(i34b, from_bus=9, to_bus=10, length_km=1, r_ohm_per_km=0.08205, x_ohm_per_km=0.19207, c_nf_per_km=0.0, max_i_ka=100, name=None, index=17, type='ol', geodata=None, in_service=True, df=1.0, parallel=1, g_us_per_km=0.0, alpha=None, temperature_degree_celsius=None)
-pp.create_line_from_parameters(i34b, from_bus=11, to_bus=12, length_km=1, r_ohm_per_km=0.22092, x_ohm_per_km=0.19988, c_nf_per_km=0.0, max_i_ka=100, name=None, index=18, type='ol', geodata=None, in_service=True, df=1.0, parallel=1, g_us_per_km=0.0, alpha=None, temperature_degree_celsius=None)
-pp.create_line_from_parameters(i34b, from_bus=12, to_bus=13, length_km=1, r_ohm_per_km=0.17093, x_ohm_per_km=0.03802, c_nf_per_km=0.0, max_i_ka=100, name=None, index=19, type='ol', geodata=None, in_service=True, df=1.0, parallel=1, g_us_per_km=0.0, alpha=None, temperature_degree_celsius=None)
+# pp.create_line_from_parameters(i34b, from_bus=0, to_bus=1, length_km=1, r_ohm_per_km=0.01938, x_ohm_per_km=0.05917, c_nf_per_km=388.61, max_i_ka=100, name=None, index=0, type='ol', geodata=None, in_service=True, df=1.0, parallel=1, g_us_per_km=0.0, alpha=None, temperature_degree_celsius=None)
+# pp.create_line_from_parameters(i34b, from_bus=0, to_bus=4, length_km=1, r_ohm_per_km=0.05403, x_ohm_per_km=0.22304, c_nf_per_km=388.61, max_i_ka=100, name=None, index=1, type='ol', geodata=None, in_service=True, df=1.0, parallel=1, g_us_per_km=0.0, alpha=None, temperature_degree_celsius=None)
+# pp.create_line_from_parameters(i34b, from_bus=1, to_bus=2, length_km=1, r_ohm_per_km=0.04699, x_ohm_per_km=0.19797, c_nf_per_km=388.61, max_i_ka=100, name=None, index=2, type='ol', geodata=None, in_service=True, df=1.0, parallel=1, g_us_per_km=0.0, alpha=None, temperature_degree_celsius=None)
+# pp.create_line_from_parameters(i34b, from_bus=1, to_bus=3, length_km=1, r_ohm_per_km=0.05811, x_ohm_per_km=0.17632, c_nf_per_km=388.61, max_i_ka=100, name=None, index=3, type='ol', geodata=None, in_service=True, df=1.0, parallel=1, g_us_per_km=0.0, alpha=None, temperature_degree_celsius=None)
+# pp.create_line_from_parameters(i34b, from_bus=1, to_bus=4, length_km=1, r_ohm_per_km=0.05695, x_ohm_per_km=0.17388, c_nf_per_km=388.61, max_i_ka=100, name=None, index=4, type='ol', geodata=None, in_service=True, df=1.0, parallel=1, g_us_per_km=0.0, alpha=None, temperature_degree_celsius=None)
+# pp.create_line_from_parameters(i34b, from_bus=2, to_bus=3, length_km=1, r_ohm_per_km=0.06701, x_ohm_per_km=0.17103, c_nf_per_km=388.61, max_i_ka=100, name=None, index=5, type='ol', geodata=None, in_service=True, df=1.0, parallel=1, g_us_per_km=0.0, alpha=None, temperature_degree_celsius=None)
+# pp.create_line_from_parameters(i34b, from_bus=3, to_bus=4, length_km=1, r_ohm_per_km=0.01335, x_ohm_per_km=0.04211, c_nf_per_km=0.0, max_i_ka=100, name=None, index=6, type='ol', geodata=None, in_service=True, df=1.0, parallel=1, g_us_per_km=0.0, alpha=None, temperature_degree_celsius=None)
+# pp.create_line_from_parameters(i34b, from_bus=3, to_bus=6, length_km=1, r_ohm_per_km=0.20912, x_ohm_per_km=0.20912, c_nf_per_km=0.0, max_i_ka=100, name=None, index=7, type='ol', geodata=None, in_service=True, df=1.0, parallel=1, g_us_per_km=0.0, alpha=None, temperature_degree_celsius=None)
+# pp.create_line_from_parameters(i34b, from_bus=3, to_bus=8, length_km=1, r_ohm_per_km=0.55618, x_ohm_per_km=0.55618, c_nf_per_km=0.0, max_i_ka=100, name=None, index=8, type='ol', geodata=None, in_service=True, df=1.0, parallel=1, g_us_per_km=0.0, alpha=None, temperature_degree_celsius=None)
+# pp.create_line_from_parameters(i34b, from_bus=4, to_bus=5, length_km=1, r_ohm_per_km=0.25202, x_ohm_per_km=0.25202, c_nf_per_km=0.0, max_i_ka=100, name=None, index=9, type='ol', geodata=None, in_service=True, df=1.0, parallel=1, g_us_per_km=0.0, alpha=None, temperature_degree_celsius=None)
+# pp.create_line_from_parameters(i34b, from_bus=5, to_bus=10, length_km=1, r_ohm_per_km=0.09498, x_ohm_per_km=0.19890, c_nf_per_km=0.0, max_i_ka=100, name=None, index=10, type='ol', geodata=None, in_service=True, df=1.0, parallel=1, g_us_per_km=0.0, alpha=None, temperature_degree_celsius=None)
+# pp.create_line_from_parameters(i34b, from_bus=5, to_bus=11, length_km=1, r_ohm_per_km=0.12291, x_ohm_per_km=0.25581, c_nf_per_km=0.0, max_i_ka=100, name=None, index=11, type='ol', geodata=None, in_service=True, df=1.0, parallel=1, g_us_per_km=0.0, alpha=None, temperature_degree_celsius=None)
+# pp.create_line_from_parameters(i34b, from_bus=5, to_bus=12, length_km=1, r_ohm_per_km=0.06615, x_ohm_per_km=0.13027, c_nf_per_km=0.0, max_i_ka=100, name=None, index=12, type='ol', geodata=None, in_service=True, df=1.0, parallel=1, g_us_per_km=0.0, alpha=None, temperature_degree_celsius=None)
+# pp.create_line_from_parameters(i34b, from_bus=6, to_bus=7, length_km=1, r_ohm_per_km=0.17615, x_ohm_per_km=0.17615, c_nf_per_km=0.0, max_i_ka=100, name=None, index=13, type='ol', geodata=None, in_service=True, df=1.0, parallel=1, g_us_per_km=0.0, alpha=None, temperature_degree_celsius=None)
+# pp.create_line_from_parameters(i34b, from_bus=6, to_bus=8, length_km=1, r_ohm_per_km=0.11001, x_ohm_per_km=0.11001, c_nf_per_km=0.0, max_i_ka=100, name=None, index=14, type='ol', geodata=None, in_service=True, df=1.0, parallel=1, g_us_per_km=0.0, alpha=None, temperature_degree_celsius=None)
+# pp.create_line_from_parameters(i34b, from_bus=8, to_bus=9, length_km=1, r_ohm_per_km=0.03181, x_ohm_per_km=0.08450, c_nf_per_km=0.0, max_i_ka=100, name=None, index=15, type='ol', geodata=None, in_service=True, df=1.0, parallel=1, g_us_per_km=0.0, alpha=None, temperature_degree_celsius=None)
+# pp.create_line_from_parameters(i34b, from_bus=8, to_bus=13, length_km=1, r_ohm_per_km=0.12711, x_ohm_per_km=0.27038, c_nf_per_km=0.0, max_i_ka=100, name=None, index=16, type='ol', geodata=None, in_service=True, df=1.0, parallel=1, g_us_per_km=0.0, alpha=None, temperature_degree_celsius=None)
+# pp.create_line_from_parameters(i34b, from_bus=9, to_bus=10, length_km=1, r_ohm_per_km=0.08205, x_ohm_per_km=0.19207, c_nf_per_km=0.0, max_i_ka=100, name=None, index=17, type='ol', geodata=None, in_service=True, df=1.0, parallel=1, g_us_per_km=0.0, alpha=None, temperature_degree_celsius=None)
+# pp.create_line_from_parameters(i34b, from_bus=11, to_bus=12, length_km=1, r_ohm_per_km=0.22092, x_ohm_per_km=0.19988, c_nf_per_km=0.0, max_i_ka=100, name=None, index=18, type='ol', geodata=None, in_service=True, df=1.0, parallel=1, g_us_per_km=0.0, alpha=None, temperature_degree_celsius=None)
+# pp.create_line_from_parameters(i34b, from_bus=12, to_bus=13, length_km=1, r_ohm_per_km=0.17093, x_ohm_per_km=0.03802, c_nf_per_km=0.0, max_i_ka=100, name=None, index=19, type='ol', geodata=None, in_service=True, df=1.0, parallel=1, g_us_per_km=0.0, alpha=None, temperature_degree_celsius=None)
 
 # CRIANDO SLACK
 pp.create_ext_grid(i34b, bus=0, vm_pu=1.05, va_degree=0.0, max_q_mvar=1.0, min_q_mvar=-1.0, in_service=True, index=0)
@@ -267,5 +154,5 @@ pp.runpp(i34b)
 #print(i34b.res_ext_grid)
 #print(i34b.res_load)
 #print(i34b.res_gen)
-pf_res_plotly(i34b, cmap='Jet', use_line_geodata=None, on_map=False, projection=None, map_style='basic', figsize=1, aspectratio='auto', line_width=2, bus_size=10, filename='temp-plot.html')
+pf_res_plotly(i34b, cmap='Jet', use_line_geodata=None, on_map=False, projection=None, map_style='basic', figsize=1, aspectratio='auto', line_width=2, bus_size=10, filename='ieee34node-pandapower.html')
 
