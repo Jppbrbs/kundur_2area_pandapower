@@ -5,7 +5,7 @@
 # Created by: Joao Pedro Peters Barbosa #
 #                                       #
 # github: https://github.com/Jppbrbs    #
-# email: jppbrbs@gmail.com              #
+# email: jpptrs@gmail.com               #
 #                                       #
 # Date: Jul/2020                        #
 #########################################
